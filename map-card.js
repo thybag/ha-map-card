@@ -41,6 +41,9 @@ class EntityConfig {
   css;
   /** @type {String} */
   picture;
+  /** @type {String} */
+  color;
+
 
   // Cannot be set via config. Passed from parent
   historyDateSelection;
@@ -48,11 +51,12 @@ class EntityConfig {
   constructor(config, defaults) {
     this.id = (typeof config === 'string' || config instanceof String)? config : config.entity;
     this.display = config.display ? config.display : "marker";
-
     this.size = config.size ? config.size : 48;
     this.historyStart = config.history_start ? HaMapUtilities.convertToAbsoluteDate(config.history_start) : defaults.historyStart;
     this.historyEnd = config.history_end ? HaMapUtilities.convertToAbsoluteDate(config.history_end) : defaults.historyEnd;
-    this.historyLineColor = config.history_line_color ?? this._generateRandomColor();
+    // If historyLineColor not set, inherit icon color
+    this.color = config.color ?? this._generateRandomColor();
+    this.historyLineColor = config.history_line_color ?? this.color;
     this.historyShowDots = config.history_show_dots ?? true;
     this.historyShowLines = config.history_show_lines ?? true;
     this.fixedX = config.fixed_x;
@@ -369,6 +373,7 @@ class Entity {
             picture="${
               picture ?? ""
             }"
+            color="${this.config.color}"
             style="${this.config.css}"
             size="${this.config.size}"
           ></map-card-entity-marker>
